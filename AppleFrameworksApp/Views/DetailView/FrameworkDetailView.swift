@@ -11,30 +11,40 @@ struct FrameworkDetailView: View {
     
     @Binding var isShowingDetailView: Bool
     @State private var isShowingSafariView = false
+    @State var isFromListView: Bool
     var framework: Framework
     
     var body: some View {
         VStack{
-            DismissButton(isShowingDetailView: $isShowingDetailView)
-            Spacer()
+            if !isFromListView{
+                DismissButton(isShowingDetailView: $isShowingDetailView)
+            }
+            if !isFromListView{
+                Spacer()
+            }
             FrameworkTitleView(framework: framework)
             Text(framework.description)
                 .font(.body)
                 .padding()
-            Spacer()
+            if !isFromListView{
+                Spacer()
+            }
             Button {
                 isShowingSafariView = true
             } label: {
                 AFButton(title: "Learn More")
             }
         }
-        .sheet(isPresented: $isShowingSafariView, content: {
-            SafariView(url: URL(string: framework.urlString) ??
+        .toolbar(.hidden, for: .tabBar)
+        .sheet(isPresented: $isShowingSafariView,
+               content: { SafariView(url: URL(string: framework.urlString) ??
                        URL(string: "www.apple.com")!)
         })
     }
 }
 
 #Preview {
-    FrameworkDetailView(isShowingDetailView: .constant(false), framework: MockData.samplePreviewFramework)
+    FrameworkDetailView(isShowingDetailView: .constant(false),
+                        isFromListView: false,
+                        framework: MockData.samplePreviewFramework)
 }
