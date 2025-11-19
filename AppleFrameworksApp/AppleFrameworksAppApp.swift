@@ -11,7 +11,6 @@ import SwiftUI
 struct AppleFrameworksAppApp: App {
     var body: some Scene {
         WindowGroup {
-//            FrameworkGridView()
             TabBarView()
         }
     }
