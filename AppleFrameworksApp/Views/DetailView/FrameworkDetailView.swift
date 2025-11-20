@@ -22,7 +22,7 @@ struct FrameworkDetailView: View {
             if !isFromListView{
                 Spacer()
             }
-            FrameworkTitleView(framework: framework)
+            FrameworkReflectionTitleView(framework: framework)
             Text(framework.description)
                 .font(.body)
                 .padding()
@@ -35,7 +35,6 @@ struct FrameworkDetailView: View {
                 AFButton(title: "Learn More")
             }
         }
-        .toolbar(.hidden, for: .tabBar)
         .sheet(isPresented: $isShowingSafariView,
                content: { SafariView(url: URL(string: framework.urlString) ??
                        URL(string: "www.apple.com")!)
@@ -47,4 +46,50 @@ struct FrameworkDetailView: View {
     FrameworkDetailView(isShowingDetailView: .constant(false),
                         isFromListView: false,
                         framework: MockData.samplePreviewFramework)
+}
+
+struct FrameworkReflectionTitleView: View {
+   
+    let framework: Framework
+    
+    var body: some View {
+        VStack {
+            Image(framework.imageName)
+                .resizable()
+                .frame(width: 100, height: 100)
+                .reflection(opacity: 0.3, spacing: 0)
+            Text(framework.name)
+                .font(.title2)
+                .fontWeight(.semibold)
+                .scaledToFit()
+                .minimumScaleFactor(0.6)
+        }
+        .padding()
+    }
+}
+
+struct ReflectionModifier: ViewModifier {
+    var opacity: Double
+    var spacing: CGFloat
+    func body(content: Content) -> some View {
+        VStack(spacing: 0) {
+            content
+            content
+                .scaleEffect(-1)
+                .mask(LinearGradient(gradient: Gradient(colors: [.black, .black.opacity(0)]),
+                                     startPoint: .top,
+                                     endPoint: .bottom))
+                .mask(LinearGradient(gradient: Gradient(colors: [.black, .black.opacity(0)]),
+                                     startPoint: .top,
+                                     endPoint: .bottom))
+                .opacity(opacity)
+                .offset(y: spacing)
+        }
+    }
+}
+
+extension View {
+    func reflection(opacity: Double, spacing: CGFloat) -> some View {
+        self.modifier(ReflectionModifier(opacity: opacity, spacing: spacing))
+    }
 }

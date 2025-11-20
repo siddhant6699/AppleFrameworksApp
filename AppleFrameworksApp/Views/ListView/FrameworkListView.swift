@@ -13,7 +13,7 @@ struct FrameworkListView: View {
     @State var isFromListView: Bool
     
     var body: some View {
-        NavigationView{
+        NavigationStack{
             List {
                 ForEach(MockData.frameworks) {framework in
                     NavigationLink(destination: FrameworkDetailView(
